@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>content/Icons/audio-150191_640.png</file>
+        <file>content/Icons/forward.png</file>
+        <file>content/Icons/Hamburger_icon.svg.png</file>
+        <file>content/Icons/loop_orig.png</file>
+        <file>content/Icons/menu_button.png</file>
+        <file>content/Icons/mute-audio-150191__640.png</file>
+        <file>content/Icons/new_forward.png</file>
+        <file>content/Icons/new_reverse.png</file>
+        <file>content/Icons/noloop.png</file>
+        <file>content/Icons/noshuffle_new.png</file>
+        <file>content/Icons/pause.png</file>
+        <file>content/Icons/play.png</file>
+        <file>content/Icons/reverse.png</file>
+        <file>content/Icons/shuffle_new.png</file>
+        <file>content/Icons/loop_playlist.png</file>
+        <file>content/Icons/loop_song.png</file>
+        <file>content/Icons/shuffle_by_album.png</file>
+        <file>content/Icons/shuffle_by_song.png</file>
+    </qresource>
+</RCC>
