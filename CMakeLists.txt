@@ -22,7 +22,8 @@ qt_add_executable(SqueezeCentral2App src/main.cpp
     src/slimp3playermodel.cpp src/slimp3playermodel.h
     src/songlistmodel.cpp src/songlistmodel.h
     src/squeezedefines.h
-    src/squeezeserver.cpp src/squeezeserver.h)
+    src/squeezeserver.cpp src/squeezeserver.h
+    src/slimp3player2.h src/slimp3player2.cpp)
 
 qt_add_resources(SqueezeCentral2App "configuration"
     PREFIX "/"
