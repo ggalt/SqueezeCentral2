@@ -12,12 +12,12 @@ Slimp3PlayerModel::Slimp3PlayerModel(QObject *parent)  :
 
 }
 
-void Slimp3PlayerModel::addPlayer(Slimp3Player *item)
+void Slimp3PlayerModel::addPlayer(Slimp3Player2 *item)
 {
     item->setParent(this);
     DEBUGF("adding player with id:" << item->macAddress());
 
-    Slimp3Player *existingPlayer = find(item->macAddress().toLatin1());
+    Slimp3Player2 *existingPlayer = find(item->macAddress().toLatin1());
 
     if( existingPlayer == nullptr) {
         DEBUGF("PLAYER DOES NOT EXIST");
@@ -48,7 +48,7 @@ QVariant Slimp3PlayerModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    Slimp3Player *item = m_list[ index.row() ];
+    Slimp3Player2 *item = m_list[ index.row() ];
     // DEBUGF("SIZE OF PLAYER LIST IS:" << m_list.count());
     // DEBUGF(QString("artist name is:") << item->currentArtist());
 
@@ -97,21 +97,21 @@ void Slimp3PlayerModel::UpdateIndex()
     emit dataChanged(newIdx, newIdx);
 }
 
-void Slimp3PlayerModel::appendRow(Slimp3Player *item)
+void Slimp3PlayerModel::appendRow(Slimp3Player2 *item)
 {
-    appendRows(QList<Slimp3Player*>() << item);
+    appendRows(QList<Slimp3Player2*>() << item);
 }
 
-void Slimp3PlayerModel::appendRows(const QList<Slimp3Player *> &items)
+void Slimp3PlayerModel::appendRows(const QList<Slimp3Player2 *> &items)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount() + items.size() - 1);
-    foreach( Slimp3Player *item, items ) {
+    foreach( Slimp3Player2 *item, items ) {
         m_list.append(item);
     }
     endInsertRows();
 }
 
-void Slimp3PlayerModel::insertRow(int row, Slimp3Player *item)
+void Slimp3PlayerModel::insertRow(int row, Slimp3Player2 *item)
 {
 
 }
@@ -140,40 +140,40 @@ bool Slimp3PlayerModel::removeRows(int row, int count, const QModelIndex &parent
     return true;
 }
 
-Slimp3Player *Slimp3PlayerModel::takeRow(int row)
+Slimp3Player2 *Slimp3PlayerModel::takeRow(int row)
 {
     beginRemoveRows(QModelIndex(), row, row);
-    Slimp3Player* item = m_list.takeAt(row);
+    Slimp3Player2* item = m_list.takeAt(row);
     endRemoveRows();
     return item;
 }
 
-Slimp3Player *Slimp3PlayerModel::find(const QString &name) const
+Slimp3Player2 *Slimp3PlayerModel::find(const QString &name) const
 {
-    foreach(Slimp3Player* item, m_list) {
+    foreach(Slimp3Player2* item, m_list) {
         if(item->playerName() == name)
             return item;
     }
     return nullptr;
 }
 
-Slimp3Player *Slimp3PlayerModel::find(const QByteArray &mac) const
+Slimp3Player2 *Slimp3PlayerModel::find(const QByteArray &mac) const
 {
     DEBUGF("LOOKING FOR MAC ADDRESS:" << mac);
-    foreach(Slimp3Player* item, m_list) {
+    foreach(Slimp3Player2* item, m_list) {
         if(item->macAddress() == mac)
             return item;
     }
     return nullptr;
 }
 
-Slimp3Player *Slimp3PlayerModel::getRow(int row)
+Slimp3Player2 *Slimp3PlayerModel::getRow(int row)
 {
-    Slimp3Player *item=m_list.at(row);
+    Slimp3Player2 *item=m_list.at(row);
     return item;
 }
 
-QModelIndex Slimp3PlayerModel::indexFromItem(const Slimp3Player *item) const
+QModelIndex Slimp3PlayerModel::indexFromItem(const Slimp3Player2 *item) const
 {
     Q_ASSERT(item);
     for(int row=0; row<m_list.size(); ++row) {
@@ -188,7 +188,7 @@ void Slimp3PlayerModel::clear()
     m_list.clear();
 }
 
-Slimp3Player *Slimp3PlayerModel::findPlayerByMAC(QString mac)
+Slimp3Player2 *Slimp3PlayerModel::findPlayerByMAC(QString mac)
 {
     return find(mac.toLatin1());
 }

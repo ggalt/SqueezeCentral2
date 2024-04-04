@@ -66,7 +66,7 @@ void Slimp3CLI::sendStandardCommand(CliCommand cmd)
         break;
     case C_SUBSCRIBE:
         // tempCommand = "subscribe playlist,mixer,pause \n";
-        tempCommand = "subscribe playlist,mixer \n";
+        tempCommand = "subscribe playlist,mixer,pause \n";
         sendCommand(tempCommand);
         break;
     default:

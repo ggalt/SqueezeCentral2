@@ -25,7 +25,7 @@ class SqueezeServer : public QObject
     Q_PROPERTY(Slimp3CLI* slimp3CLI READ slimp3CLI CONSTANT)
     Q_PROPERTY(Slimp3JSON* slimp3JSON READ slimp3JSON CONSTANT)
     Q_PROPERTY(Slimp3PlayerModel* PlayerModel READ PlayerModel NOTIFY PlayerModelChanged FINAL)
-    Q_PROPERTY(Slimp3Player* curPlayer READ curPlayer WRITE setCurPlayer NOTIFY curPlayerChanged FINAL)
+    Q_PROPERTY(Slimp3Player2* curPlayer READ curPlayer WRITE setCurPlayer NOTIFY curPlayerChanged FINAL)
     Q_PROPERTY(bool cliConnected READ cliConnected WRITE setCliConnected NOTIFY cliConnectedChanged FINAL)
 
 
@@ -44,8 +44,8 @@ public:
 
     bool hasMacAddress(QString mac);
 
-    // Slimp3Player *curPlayer() const;
-    void setCurPlayer(Slimp3Player *newCurPlayer);
+    // Slimp3Player2 *curPlayer() const;
+    void setCurPlayer(Slimp3Player2 *newCurPlayer);
 
     bool cliConnected() const;
     void setCliConnected(bool newCliConnected);
@@ -60,7 +60,7 @@ public slots:
     void receiveJSONResponse(QByteArray msg);
 
     void makePlayerCurrent(QString mac);
-    Slimp3Player *curPlayer();
+    Slimp3Player2 *curPlayer();
 
     void pauseButton( QString mac, int val );
 
@@ -86,7 +86,7 @@ private:
     static QRegularExpression macRegex;
     QQmlApplicationEngine *engine;
     QUrl url;
-    Slimp3Player *m_curPlayer = nullptr;
+    Slimp3Player2 *m_curPlayer = nullptr;
     bool m_cliConnected;
 
     QTimer tock;

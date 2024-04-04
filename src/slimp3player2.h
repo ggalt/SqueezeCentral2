@@ -6,6 +6,7 @@
 #include <QByteArray>
 #include "songlistmodel.h"
 #include <QObject>
+#include <QTimer>
 
 class Slimp3Player2 : public QObject
 {
@@ -30,6 +31,10 @@ class Slimp3Player2 : public QObject
     Q_PROPERTY(double songProgress READ songProgress WRITE setSongProgress NOTIFY songProgressChanged FINAL)
 
     Q_PROPERTY(int mixerVolume READ mixerVolume WRITE setMixerVolume NOTIFY mixerVolumeChanged FINAL)
+    Q_PROPERTY(QString coverArtSource READ coverArtSource CONSTANT)
+    Q_PROPERTY(QString currentArtist READ currentArtist CONSTANT)
+    Q_PROPERTY(QString currentAlbum READ currentAlbum CONSTANT)
+    Q_PROPERTY(QString currentTitle READ currentTitle CONSTANT)
 
 public:
     explicit Slimp3Player2(QObject *parent = nullptr);
@@ -78,13 +83,22 @@ public:
 
     double songProgress() const;
     void setSongProgress(double newSongProgress);
+    void tickSongProgress( void );
 
     int mixerVolume() const;
     void setMixerVolume(int newMixerVolume);
 
+    QString coverArtSource() const;
+
+    QString currentArtist() const;
+
+    QString currentAlbum() const;
+
+    QString currentTitle() const;
+
 public slots:
     void UpdatePlayerValues( Slimp3Player2 *updatedPlayer);
-    void UpdatePlayerValues( QJsonDocument* doc);
+    void UpdatePlayerValues( QJsonDocument &doc);
     void UpdatePlayerPlaylistIndex();
     void Tick(void);
 
@@ -126,6 +140,11 @@ private:
     SongObject *m_currentSong = nullptr;
     double m_songProgress = 0.0;
     int m_mixerVolume = 0;
+
+    QString m_coverArtSource;
+    QString m_currentArtist;
+    QString m_currentAlbum;
+    QString m_currentTitle;
 };
 
 #endif // SLIMP3PLAYER2_H

@@ -11,57 +11,70 @@
 class SongObject : public QObject {
     Q_OBJECT
 
-    Q_PROPERTY(QString Title READ Title WRITE setTitle NOTIFY TitleChanged FINAL)
-    Q_PROPERTY(QString Artist READ Artist WRITE setArtist NOTIFY ArtistChanged FINAL)
     Q_PROPERTY(QString Album READ Album WRITE setAlbum NOTIFY AlbumChanged FINAL)
-    Q_PROPERTY(QString Duration READ Duration WRITE setDuration NOTIFY DurationChanged FINAL)
-    // Q_PROPERTY(float Duration READ Duration WRITE setDuration NOTIFY DurationChanged FINAL)
-    Q_PROPERTY(QString TrackNumber READ TrackNumber WRITE setTrackNumber NOTIFY TrackNumberChanged FINAL)
+    Q_PROPERTY(QString Artist READ Artist WRITE setArtist NOTIFY ArtistChanged FINAL)
     Q_PROPERTY(QString artworkID READ artworkID WRITE setArtworkID NOTIFY artworkIDChanged FINAL)
+    Q_PROPERTY(QString coverID READ coverID WRITE setCoverID NOTIFY coverIDChanged FINAL)
+    Q_PROPERTY(double Duration READ Duration WRITE setDuration NOTIFY DurationChanged FINAL)
+    Q_PROPERTY(int SongID READ songID WRITE setSongID NOTIFY songIDChanged FINAL)
     Q_PROPERTY(int PlayListIndex READ PlayListIndex WRITE setPlayListIndex NOTIFY PlayListIndexChanged FINAL)
+    Q_PROPERTY(QString Title READ Title WRITE setTitle NOTIFY TitleChanged FINAL)
+    Q_PROPERTY(QString TrackNumber READ TrackNumber WRITE setTrackNumber NOTIFY TrackNumberChanged FINAL)
 
 public:
     SongObject( QObject *parent = nullptr);
 
-    QString Title() const;
-    void setTitle(const QString &newTitle);
+    QString Album() const;
+    void setAlbum(const QString &newAlbum);
 
     QString Artist() const;
     void setArtist(const QString &newArtist);
 
-    QString Album() const;
-    void setAlbum(const QString &newAlbum);
-
-    QString Duration() const;
-    void setDuration(QString newDuration);
-
-    QString TrackNumber() const;
-    void setTrackNumber(const QString &newTrackNumber);
-
     QString artworkID() const;
     void setArtworkID(const QString &newArtworkID);
+
+    QString coverID() const;
+    void setCoverID(const QString &newCoverID);
+
+    double Duration() const;
+    void setDuration(double newDuration);
+
+    int songID() const;
+    void setSongID(int newSongID);
 
     int PlayListIndex() const;
     void setPlayListIndex(int newPlayListIndex);
 
+    QString Title() const;
+    void setTitle(const QString &newTitle);
+
+    QString TrackNumber() const;
+    void setTrackNumber(const QString &newTrackNumber);
+
 signals:
-    void TitleChanged();
-    void ArtistChanged();
+
     void AlbumChanged();
-    void DurationChanged();
-    void TrackNumberChanged();
+    void ArtistChanged();
     void artworkIDChanged();
+    void coverIDChanged();
+    void DurationChanged();
+    void songIDChanged();
     void PlayListIndexChanged();
+    void TitleChanged();
+    void TrackNumberChanged();
 
 private:
-    QString m_Title;
-    QString m_Artist;
     QString m_Album;
-    QString m_Duration;
-    QString m_TrackNumber;
+    QString m_Artist;
     QString m_artworkID;
+    QString m_coverID;
+    double m_Duration;
+    int m_SongID;
     int m_PlayListIndex;
+    QString m_Title;
+    QString m_TrackNumber;
 };
+
 
 /////////////////////////////////////////////////////////////////////
 /// \brief The SongListModel class

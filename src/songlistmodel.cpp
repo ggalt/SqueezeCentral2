@@ -158,17 +158,18 @@ SongObject::SongObject(QObject *parent)
 
 }
 
-QString SongObject::Title() const
+
+QString SongObject::Album() const
 {
-    return m_Title;
+    return m_Album;
 }
 
-void SongObject::setTitle(const QString &newTitle)
+void SongObject::setAlbum(const QString &newAlbum)
 {
-    if (m_Title == newTitle)
+    if (m_Album == newAlbum)
         return;
-    m_Title = newTitle;
-    emit TitleChanged();
+    m_Album = newAlbum;
+    emit AlbumChanged();
 }
 
 QString SongObject::Artist() const
@@ -184,45 +185,6 @@ void SongObject::setArtist(const QString &newArtist)
     emit ArtistChanged();
 }
 
-QString SongObject::Album() const
-{
-    return m_Album;
-}
-
-void SongObject::setAlbum(const QString &newAlbum)
-{
-    if (m_Album == newAlbum)
-        return;
-    m_Album = newAlbum;
-    emit AlbumChanged();
-}
-
-QString SongObject::Duration() const
-{
-    return m_Duration;
-}
-
-void SongObject::setDuration(QString newDuration)
-{
-    if(m_Duration == newDuration)
-        return;
-    m_Duration = newDuration;
-    emit DurationChanged();
-}
-
-QString SongObject::TrackNumber() const
-{
-    return m_TrackNumber;
-}
-
-void SongObject::setTrackNumber(const QString &newTrackNumber)
-{
-    if (m_TrackNumber == newTrackNumber)
-        return;
-    m_TrackNumber = newTrackNumber;
-    emit TrackNumberChanged();
-}
-
 QString SongObject::artworkID() const
 {
     return m_artworkID;
@@ -236,6 +198,45 @@ void SongObject::setArtworkID(const QString &newArtworkID)
     emit artworkIDChanged();
 }
 
+QString SongObject::coverID() const
+{
+    return m_coverID;
+}
+
+void SongObject::setCoverID(const QString &newCoverID)
+{
+    if (m_coverID == newCoverID)
+        return;
+    m_coverID = newCoverID;
+    emit coverIDChanged();
+}
+
+double SongObject::Duration() const
+{
+    return m_Duration;
+}
+
+void SongObject::setDuration(double newDuration)
+{
+    if (qFuzzyCompare(m_Duration, newDuration))
+        return;
+    m_Duration = newDuration;
+    emit DurationChanged();
+}
+
+int SongObject::songID() const
+{
+    return m_SongID;
+}
+
+void SongObject::setSongID(int newSongID)
+{
+    if (m_SongID == newSongID)
+        return;
+    m_SongID = newSongID;
+    emit songIDChanged();
+}
+
 int SongObject::PlayListIndex() const
 {
     return m_PlayListIndex;
@@ -247,4 +248,30 @@ void SongObject::setPlayListIndex(int newPlayListIndex)
         return;
     m_PlayListIndex = newPlayListIndex;
     emit PlayListIndexChanged();
+}
+
+QString SongObject::Title() const
+{
+    return m_Title;
+}
+
+void SongObject::setTitle(const QString &newTitle)
+{
+    if (m_Title == newTitle)
+        return;
+    m_Title = newTitle;
+    emit TitleChanged();
+}
+
+QString SongObject::TrackNumber() const
+{
+    return m_TrackNumber;
+}
+
+void SongObject::setTrackNumber(const QString &newTrackNumber)
+{
+    if (m_TrackNumber == newTrackNumber)
+        return;
+    m_TrackNumber = newTrackNumber;
+    emit TrackNumberChanged();
 }

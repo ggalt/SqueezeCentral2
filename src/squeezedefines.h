@@ -92,6 +92,9 @@ enum playerUpdateField
     MODESTATUS=0,
     VOLUME,
     PLAYTIME,
+    NEW_SONG,
+    REPEAT_MODE,
+    SHUFFLE_MODE,
     PLAYLIST_UPDATE
 };
 Q_DECLARE_METATYPE(playerUpdateField)
