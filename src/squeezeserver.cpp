@@ -134,14 +134,14 @@ void SqueezeServer::UpdatePlayer(QString mac, QJsonDocument &doc)
         // }
         // player->UpdatePlayerValues(t);
         // DEBUGF("PLAYER INDEX:" << player->playerIndex() << "PLAYER MODEL COUNT" << m_PlayerModel->rowCount());
-        if( player->playerIndex().toInt() == m_PlayerModel->rowCount() -1 ){    // last player updated
+        if( player->playerIndex() == m_PlayerModel->rowCount() -1 ){    // last player updated
             DEBUGF("LAST PLAYER UPDATED:" << player->playerIndex() );
             engine->load(url);
             engine->rootContext()->setContextProperty("CurrentPlayer", this->curPlayer());
             engine->rootContext()->setContextProperty("tock", &tock);
-            QObject *rootObj = engine->rootObjects()[0];
+            QObject *rootObj = engine->rootObjects().at(0);
 
-            connect(rootObj, SIGNAL(pauseButton(QString, int)), this, SLOT(pauseButton(QString,int)));
+            connect(rootObj, SIGNAL(pauseButton(QString,int)), this, SLOT(pauseButton(QString,int)));
 
             // QObject *rootItem = engine->rootContext()->contextObject();
             // QObject::connect(this->parent(), SIGNAL(findPlayerByMAC(QString)),
@@ -184,7 +184,7 @@ void SqueezeServer::receivePlayerCLICommand(QString mac, QString cmd)
 
         } else if( cmdList[1] == "newsong" ) {
             DEBUGF("new song");
-            UpdatePlayer( mac, NEW_SONG, cmdList[3] );  // pass new song and playlist index
+            player->setPlayerIndex( cmdList[3].toInt() );
 
         } else if( cmdList[1] == "repeat" ) {
             player->setRepeatPlaylist( cmdList[2].toInt() );
@@ -201,7 +201,17 @@ void SqueezeServer::receivePlayerCLICommand(QString mac, QString cmd)
 
     } else if( cmdList[0] == "mixer" ) {
         DEBUGF("MIXER COMMAND" << cmdList );
-        UpdatePlayer( mac, VOLUME, cmdList[2] );
+        QString vol = QByteArray::fromPercentEncoding( cmdList[2].toLatin1() );
+        int currVol = player->mixerVolume();
+        if( vol.contains("+") ) {
+            vol = vol.sliced( vol.lastIndexOf("+") );   // get rid of the "+" which should leave a number
+            player->setMixerVolume( currVol + vol.toInt() );
+        } else if( vol.contains( "-" ) ) {
+            vol = vol.sliced( vol.lastIndexOf("-") );   // get rid of the "-" which should leave a number
+            player->setMixerVolume( currVol - vol.toInt() );
+        } else {
+            player->setMixerVolume( vol.toInt() );
+        }
 
     } else if( cmdList[0] == "pause" ) {
         DEBUGF("PAUSE COMMAND" << cmdList );

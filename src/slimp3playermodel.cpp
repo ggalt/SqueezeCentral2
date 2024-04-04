@@ -78,15 +78,15 @@ QVariant Slimp3PlayerModel::data(const QModelIndex &index, int role) const
         return item->songDuration();
     }
     else if( role == TimeRemaining )
-        return item->elapsedTime();
+        return item->songDuration() - item->songProgress();
     else if( role == CurrentProgress )
-        return item->currentProgress();
+        return item->songProgress();
     else if( role == PauseStatus )
         return item->playerMode();
     else if( role == RepeatStatus )
-        return item->repeatStatus();
+        return item->repeatPlaylist();
     else if( role == ShuffleStatus )
-        return item->shuffleStatus();
+        return item->shufflePlaylist();
     else
         return QVariant();
 }
@@ -218,11 +218,9 @@ QString Slimp3PlayerModel::getAlbumArt(QString mac)
     return findPlayerByMAC(mac)->coverArtSource();
 }
 
-QString Slimp3PlayerModel::getDuration(QString mac)
+double Slimp3PlayerModel::getDuration(QString mac)
 {
-    QString duration = findPlayerByMAC(mac)->songDuration();
-    DEBUGF("DURATION:" << duration);
-    return duration;
+    return findPlayerByMAC(mac)->songDuration();
 }
 
 QString Slimp3PlayerModel::getTimeRemaining(QString mac)
@@ -230,9 +228,9 @@ QString Slimp3PlayerModel::getTimeRemaining(QString mac)
     return "";
 }
 
-float Slimp3PlayerModel::getProgress(QString mac)
+double Slimp3PlayerModel::getProgress(QString mac)
 {
-    return findPlayerByMAC(mac)->currentProgress();
+    return findPlayerByMAC(mac)->songProgress();
 }
 
 QHash<int, QByteArray> Slimp3PlayerModel::roleNames() const

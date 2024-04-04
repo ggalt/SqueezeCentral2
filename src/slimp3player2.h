@@ -29,6 +29,7 @@ class Slimp3Player2 : public QObject
     Q_PROPERTY(SongListModel* songListModel READ songListModel WRITE setSongListModel NOTIFY songListModelChanged FINAL)
     Q_PROPERTY(SongObject* currentSong READ currentSong WRITE setCurrentSong NOTIFY currentSongChanged FINAL)
     Q_PROPERTY(double songProgress READ songProgress WRITE setSongProgress NOTIFY songProgressChanged FINAL)
+    Q_PROPERTY(double songDuration READ songDuration WRITE setSongDuration NOTIFY songDurationChanged FINAL)
 
     Q_PROPERTY(int mixerVolume READ mixerVolume WRITE setMixerVolume NOTIFY mixerVolumeChanged FINAL)
     Q_PROPERTY(QString coverArtSource READ coverArtSource CONSTANT)
@@ -89,12 +90,12 @@ public:
     void setMixerVolume(int newMixerVolume);
 
     QString coverArtSource() const;
-
     QString currentArtist() const;
-
     QString currentAlbum() const;
-
     QString currentTitle() const;
+
+    double songDuration() const;
+    void setSongDuration(double newSongDuration);
 
 public slots:
     void UpdatePlayerValues( Slimp3Player2 *updatedPlayer);
@@ -123,6 +124,8 @@ signals:
     void songProgressChanged();
     void mixerVolumeChanged();
 
+    void songDurationChanged();
+
 private:
     QString m_macAddress = nullptr;
     QString m_playerName = nullptr;
@@ -145,6 +148,7 @@ private:
     QString m_currentArtist;
     QString m_currentAlbum;
     QString m_currentTitle;
+    double m_songDuration;
 };
 
 #endif // SLIMP3PLAYER2_H

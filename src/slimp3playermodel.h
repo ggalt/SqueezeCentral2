@@ -60,9 +60,9 @@ public slots:
     QString getArtistName(QString mac);
     QString getAlbumName(QString mac);
     QString getAlbumArt(QString mac);
-    QString getDuration(QString mac);
+    double getDuration(QString mac);
     QString getTimeRemaining(QString mac);
-    float getProgress(QString mac);
+    double getProgress(QString mac);
 
 
 protected:

@@ -96,6 +96,10 @@ void Slimp3Player2::setPlayerMode(const QString &newPlayerMode)
     if (m_playerMode == newPlayerMode)
         return;
     m_playerMode = newPlayerMode;
+    if(m_playerMode == "pause" )
+        setIsPlaying(false);
+    else
+        setIsPlaying(true);
     emit playerModeChanged();
 }
 
@@ -293,7 +297,7 @@ void Slimp3Player2::UpdatePlayerPlaylistIndex()
 
 void Slimp3Player2::Tick()
 {
-    if( m_isPlaying )
+    if( isPlaying() )
         tickSongProgress();   // increment song progress by 1 second
 }
 
@@ -316,4 +320,17 @@ QString Slimp3Player2::currentAlbum() const
 QString Slimp3Player2::currentTitle() const
 {
     return m_currentTitle;
+}
+
+double Slimp3Player2::songDuration() const
+{
+    return m_songDuration;
+}
+
+void Slimp3Player2::setSongDuration(double newSongDuration)
+{
+    if (qFuzzyCompare(m_songDuration, newSongDuration))
+        return;
+    m_songDuration = newSongDuration;
+    emit songDurationChanged();
 }
