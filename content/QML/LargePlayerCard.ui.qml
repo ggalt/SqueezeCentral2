@@ -31,6 +31,7 @@ Pane {
                 largePlayerControls.albumTextVal = SqueezeServer.curPlayer.currentAlbum
                 largePlayerControls.sontTitleText = SqueezeServer.curPlayer.currentTitle
                 albumArtID = SqueezeServer.curPlayer.coverArtSource
+                console.log("album art id:", albumArtID)
                 // artistName = SqueezeServer.curPlayer.currentArtist
                 // albumName = SqueezeServer.curPlayer.currentAlbum
                 // songTitle = SqueezeServer.curPlayer.currentTitle

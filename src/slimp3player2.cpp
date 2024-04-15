@@ -7,7 +7,7 @@
 #include <QJsonArray>
 #include <QQmlContext>
 #include <QStringList>
-
+#include "squeezedefines.h"
 
 #ifdef SLIMP3PLAYER_DEBUG
 #define DEBUGF(...) qDebug() << this->objectName() << Q_FUNC_INFO << __VA_ARGS__;
@@ -19,6 +19,7 @@
 Slimp3Player2::Slimp3Player2(QObject *parent)
     : QObject{parent}
 {
+    // m_songListModel = new SongListModel(this);
 }
 
 QString Slimp3Player2::macAddress() const
@@ -165,6 +166,17 @@ void Slimp3Player2::setPlaylistCurIndex(int newPlaylistCurIndex)
     if (m_playlistCurIndex == newPlaylistCurIndex)
         return;
     m_playlistCurIndex = newPlaylistCurIndex;
+    if( m_songListModel != nullptr ) {
+        setCurrentSong( songListModel()->getRow(m_playlistCurIndex));
+        DEBUGF("setting current song to:" << currentSong()->Title());
+        setSongProgress(0.0);
+        setSongDuration(currentSong()->Duration());
+    } else {
+        DEBUGF("SONG LIST MODEL IS NULL");
+        setSongListModel(new SongListModel(this));
+        m_songListModel->clear();
+    }
+
     emit playlistCurIndexChanged();
 }
 
@@ -207,6 +219,11 @@ void Slimp3Player2::setCurrentSong(SongObject *newCurrentSong)
     emit currentSongChanged();
 }
 
+void Slimp3Player2::setCurrentSong()
+{
+    setCurrentSong( songListModel()->getRow(playlistCurIndex()) );
+}
+
 double Slimp3Player2::songProgress() const
 {
     return m_songProgress;
@@ -246,6 +263,7 @@ void Slimp3Player2::UpdatePlayerValues(Slimp3Player2 *updatedPlayer)
 void Slimp3Player2::UpdatePlayerValues(QJsonDocument &doc)
 {
     // result section
+    // DEBUGF("JSON DOC:" << doc);
     QJsonValue playerResult(doc["result"]);
     setMixerVolume( playerResult["mixer volume"].toInt(-1) );
     setPlayerMode( playerResult["mode"].toString("pause") );
@@ -254,12 +272,13 @@ void Slimp3Player2::UpdatePlayerValues(QJsonDocument &doc)
     setPlaylistMode( playerResult["playlist mode"].toString("off") );
     if(  playerResult["playlist_cur_index"].isString() ) {
         int idx = playerResult["playlist_cur_index"].toString("0").toInt();
-        setPlayerIndex(idx);
+        setPlaylistCurIndex(idx);
     } else
-        setPlayerIndex( playerResult["playlist_cur_index"].toInt(-1) );
+        setPlaylistCurIndex( playerResult["playlist_cur_index"].toInt(-1) );
     setRepeatPlaylist( playerResult["playlist repeat"].toInt(0) );
     setShufflePlaylist( playerResult["playlist shuffle"].toInt(0) );
     setSongProgress( playerResult["time"].toDouble() );
+    // DEBUGF("song progress info:" << playerResult["time"].toDouble() << playerResult["time"].toString() );
 
     if( m_playerMode == "play" )
         setIsPlaying( true );
@@ -278,16 +297,23 @@ void Slimp3Player2::UpdatePlayerValues(QJsonDocument &doc)
     for(int i = 0; i < playlistCount; i++ ) {
         QJsonObject item = playlistLoop[i].toObject();
 
-        SongObject *songObj = new SongObject(this->songListModel());
+        DEBUGF("SETTING SONG INFO FOR TRACK" << i << "OF ALBUM" << item["album"].toString(nullptr));
+
+        SongObject *songObj = new SongObject(this);
         songObj->setAlbum( item["album"].toString(nullptr) );
         songObj->setArtist( item["artist"].toString(nullptr) );
         songObj->setArtworkID( item["artwork_track_id"].toString(nullptr) );
         songObj->setDuration( item["duration"].toDouble(-1) );
+        // DEBUGF("SONG DURATION:" << item["duration"].toDouble(-1) << item["duration"].toString());
         songObj->setSongID( item["id"].toInt(0) );
         songObj->setPlayListIndex( item["playlist index"].toInt(-1) );
         songObj->setTitle( item["title"].toString("no title") );
         songObj->setTrackNumber( item["tracknum"].toString("0") );
+        m_songListModel->addSong(songObj);
+        DEBUGF("TEMPORARY SONG LIST MODEL SIZE:" << songListModel()->rowCount() << "or" << m_songListModel->rowCount());
     }
+    DEBUGF("SONG LIST MODEL SIZE:" << songListModel()->rowCount());
+    setCurrentSong();
 }
 
 void Slimp3Player2::UpdatePlayerPlaylistIndex()
@@ -304,27 +330,39 @@ void Slimp3Player2::Tick()
 
 QString Slimp3Player2::coverArtSource() const
 {
-    return m_coverArtSource;
+    if( m_currentSong == nullptr ) {
+        DEBUGF("CURRENT SONG POINT IS NULL");
+        return "";
+    }
+    return currentSong()->artworkID();
 }
 
 QString Slimp3Player2::currentArtist() const
 {
-    return m_currentArtist;
+    if( m_currentSong == nullptr )
+        return "";
+    return currentSong()->Artist();
 }
 
 QString Slimp3Player2::currentAlbum() const
 {
-    return m_currentAlbum;
+    if( m_currentSong == nullptr )
+        return "";
+    return currentSong()->Album();
 }
 
 QString Slimp3Player2::currentTitle() const
 {
-    return m_currentTitle;
+    if( m_currentSong == nullptr )
+        return "";
+    return currentSong()->Title();
 }
 
 double Slimp3Player2::songDuration() const
 {
-    return m_songDuration;
+    if( m_currentSong == nullptr )
+        return 0.0;
+    return currentSong()->Duration();
 }
 
 void Slimp3Player2::setSongDuration(double newSongDuration)
@@ -332,5 +370,6 @@ void Slimp3Player2::setSongDuration(double newSongDuration)
     if (qFuzzyCompare(m_songDuration, newSongDuration))
         return;
     m_songDuration = newSongDuration;
+    DEBUGF("SONG DURATION OF PLAYER:" << m_songDuration);
     emit songDurationChanged();
 }

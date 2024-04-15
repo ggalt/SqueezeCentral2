@@ -31,7 +31,7 @@ void Slimp3PlayerModel::addPlayer(Slimp3Player2 *item)
         UpdateIndex();
     }
 
-    DEBUGF( "PLAYER ARTIST:" << item->currentArtist());
+    // DEBUGF( "PLAYER ARTIST:" << item->currentArtist());
     DEBUGF("adding player with id:" << item->macAddress());
     emit modelUpdated();
 }
@@ -52,43 +52,66 @@ QVariant Slimp3PlayerModel::data(const QModelIndex &index, int role) const
     // DEBUGF("SIZE OF PLAYER LIST IS:" << m_list.count());
     // DEBUGF(QString("artist name is:") << item->currentArtist());
 
-    if( role == NameRole )
+    DEBUGF( "***PLAYER INDEX:" << item->playerIndex() );
+    DEBUGF( "***PLAYLIST INDEX:" << item->playlistCurIndex() );
+    if( role == NameRole ) {
+        DEBUGF("PLAYER NAME:" << item->playerName() );
         return item->playerName();
-    else if( role == MACRole )
+    }
+    else if( role == MACRole ) {
+        DEBUGF("MAC ADDRESS:" << item->macAddress() );
         return item->macAddress();
+    }
     else if( role == PlayerRole ) {
         QVariant retVal;
         retVal.setValue(item);
+        DEBUGF("PLAYER:" << retVal );
         return retVal;
     }
     else if( role == SongTitle ) {
         DEBUGF("Songtitle requested:" << item->currentTitle());
         return item->currentTitle();
     }
-    else if( role == ArtistName )
+    else if( role == ArtistName ) {
+        DEBUGF("ARTIST NAME:" << item->currentArtist() );
         return item->currentArtist();
-    else if( role == AlbumTitle )
+    }
+    else if( role == AlbumTitle ) {
+        DEBUGF("ALBUM NAME:" << item->currentAlbum() );
         return item->currentAlbum();
+    }
     else if( role == AlbumArt ) {
-        DEBUGF("Songtitle requested:" << item->coverArtSource());
+        DEBUGF("ALBUM ART ID:" << item->coverArtSource());
         return item->coverArtSource();
     }
     else if( role == Duration ) {
         DEBUGF("Duration requested:" << item->songDuration());
         return item->songDuration();
     }
-    else if( role == TimeRemaining )
+    else if( role == TimeRemaining ) {
+        DEBUGF("TIME REMAINING:" << item->songDuration() - item->songProgress() );
         return item->songDuration() - item->songProgress();
-    else if( role == CurrentProgress )
+    }
+    else if( role == CurrentProgress ){
+        DEBUGF("PLAYER MODEL SONG PROGRESS:" << item->songProgress());
         return item->songProgress();
-    else if( role == PauseStatus )
+    }
+    else if( role == PauseStatus ) {
+        DEBUGF("PAUSE STATUS:" << item->playerMode() );
         return item->playerMode();
-    else if( role == RepeatStatus )
+    }
+    else if( role == RepeatStatus ) {
+        DEBUGF("REPEAT STATUS:" << item->repeatPlaylist() );
         return item->repeatPlaylist();
-    else if( role == ShuffleStatus )
+    }
+    else if( role == ShuffleStatus ) {
+        DEBUGF("SHUFFLE STATUS:" << item->shufflePlaylist() );
         return item->shufflePlaylist();
-    else
+    }
+    else {
+        DEBUGF("ERROR" );
         return QVariant();
+    }
 }
 
 void Slimp3PlayerModel::UpdateIndex()

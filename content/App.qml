@@ -77,43 +77,6 @@ Window {
             font.pointSize: 30
             onClicked: drawer.open()
         }
-        // ToolButton {
-        //     id: stackControlButton
-        //     anchors.left: parent.left
-        //     // text: stackView.depth > 1 ? "\u25C0" : "\u2630"
-        //     text: "\u25C0"
-        //     font:  Constants.largeFont
-        //     opacity: (stackView.depth === 1) ? 0.5 : 1.0
-        //     onClicked: {
-        //         if (stackView.depth === 1) {
-        //             drawer.open()
-        //         }
-        //     }
-        // }
-
-        // Label {
-        //     id: connectionStatus
-        //     text: "Connected"
-        //     font: Constants.largeFont
-        //     anchors.centerIn: parent
-        // }
-
-        // ToolButton {
-        //     id: menuButton
-        //     anchors.right: parent.right
-        //     // text: stackView.depth === 1 ? "\u25C0" : "\u2630"
-        //     text: "\u2630"
-        //     font:  Constants.largeFont
-        //     // opacity: stackView.depth === 1 ? 1.0 : 0.5
-
-        //     onClicked: {
-        //         if (stackView.depth > 1) {
-        //             stackView.pop()
-        //         // } else {
-        //         //     drawer.open()
-        //         }
-        //     }
-        // }
     }
 
     Rectangle {

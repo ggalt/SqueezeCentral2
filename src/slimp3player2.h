@@ -81,6 +81,7 @@ public:
 
     SongObject *currentSong() const;
     void setCurrentSong(SongObject *newCurrentSong);
+    void setCurrentSong(void);
 
     double songProgress() const;
     void setSongProgress(double newSongProgress);

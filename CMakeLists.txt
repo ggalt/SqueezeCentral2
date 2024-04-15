@@ -18,7 +18,7 @@ qt_add_executable(SqueezeCentral2App src/main.cpp
     SqueezeCentral2.qrc
     src/slimp3cli.cpp src/slimp3cli.h
     src/slimp3json.cpp src/slimp3json.h
-    src/slimp3player.cpp src/slimp3player.h
+
     src/slimp3playermodel.cpp src/slimp3playermodel.h
     src/songlistmodel.cpp src/songlistmodel.h
     src/squeezedefines.h

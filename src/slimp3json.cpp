@@ -74,8 +74,9 @@ void Slimp3JSON::sendJSONCommand(QString mac, QStringList cmds)
     DEBUGF(url);
 
     QByteArray cmd = formatJSONCommand(mac, cmds);
-    DEBUGF(cmd);
+    DEBUGF(url << cmd);
     req.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
+    DEBUGF( req.rawHeaderList() );
     mgr->post(req,cmd);
 }
 
@@ -88,6 +89,7 @@ void Slimp3JSON::receiveJSONReply(QNetworkReply* reply)
         QString contents = QString::fromUtf8(reply->readAll());
         QJsonDocument doc = QJsonDocument::fromJson(contents.toUtf8());
 
+        DEBUGF("JSON DOC:" << doc );
         if( doc["params"].isArray() ) {
             QJsonValue array(doc["params"]);
             if( array[0] !="") {

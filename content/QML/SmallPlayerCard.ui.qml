@@ -35,8 +35,8 @@ Rectangle {
     Connections {
         target: mainWindow
         function onTickTock() {
-            songProgressBar.value = currentProgress
-            console.log("Current Progress:" + " / " + duration +" / " +  timeRemaining +" / " +  playerName)
+            songProgressBar.value = currentProgress / duration
+            // console.log("Current Progress:" + currentProgress +" / " +  duration +" / " +  playerName)
         }
     }
 
@@ -102,7 +102,7 @@ Rectangle {
 
             ProgressBar {
                 id: songProgressBar
-                value: currentProgress
+                // value: currentProgress
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width * 4 / 5
@@ -198,6 +198,7 @@ Rectangle {
                                 mainWindow.pauseButton( macAddress, 0 )
                                 playImage.source = "qrc:/content/Icons/pause.png"
                             }
+                            console.log(playerName, songTitle, artistName, albumName, albumArtID, duration, timeRemaining, currentProgress, pauseStatus, repeatStatus, shuffleStatus)
                         }
                     }
                 }

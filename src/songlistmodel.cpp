@@ -1,4 +1,5 @@
 #include "songlistmodel.h"
+#include "squeezedefines.h"
 
 #ifdef SONGMODEL_DEBUG
 #define DEBUGF(...) qDebug() << this->objectName() << Q_FUNC_INFO << __VA_ARGS__;
@@ -15,6 +16,7 @@ void SongListModel::addSong(SongObject *item)
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_list << item;
     endInsertRows();
+    DEBUGF("ADDED SONG" << item->Album() << item->Title() << "COUNT IS:" << rowCount() );
 }
 
 int SongListModel::rowCount(const QModelIndex &parent) const
