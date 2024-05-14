@@ -32,10 +32,10 @@ class Slimp3Player2 : public QObject
     Q_PROPERTY(double songDuration READ songDuration WRITE setSongDuration NOTIFY songDurationChanged FINAL)
 
     Q_PROPERTY(int mixerVolume READ mixerVolume WRITE setMixerVolume NOTIFY mixerVolumeChanged FINAL)
-    Q_PROPERTY(QString coverArtSource READ coverArtSource CONSTANT)
-    Q_PROPERTY(QString currentArtist READ currentArtist CONSTANT)
-    Q_PROPERTY(QString currentAlbum READ currentAlbum CONSTANT)
-    Q_PROPERTY(QString currentTitle READ currentTitle CONSTANT)
+    Q_PROPERTY(QString coverArtSource READ coverArtSource WRITE setCoverArtSource NOTIFY coverArtSourceChanged FINAL)
+    Q_PROPERTY(QString currentArtist READ currentArtist WRITE setCurrentArtist NOTIFY currentArtistChanged FINAL)
+    Q_PROPERTY(QString currentAlbum READ currentAlbum WRITE setCurrentAlbum NOTIFY currentAlbumChanged FINAL)
+    Q_PROPERTY(QString currentTitle READ currentTitle WRITE setCurrentTitle NOTIFY currentTitleChanged FINAL)
 
 public:
     explicit Slimp3Player2(QObject *parent = nullptr);
@@ -98,6 +98,14 @@ public:
     double songDuration() const;
     void setSongDuration(double newSongDuration);
 
+    void setCoverArtSource(const QString &newCoverArtSource);
+
+    void setCurrentArtist(const QString &newCurrentArtist);
+
+    void setCurrentAlbum(const QString &newCurrentAlbum);
+
+    void setCurrentTitle(const QString &newCurrentTitle);
+
 public slots:
     void UpdatePlayerValues( Slimp3Player2 *updatedPlayer);
     void UpdatePlayerValues( QJsonDocument &doc);
@@ -126,6 +134,14 @@ signals:
     void mixerVolumeChanged();
 
     void songDurationChanged();
+
+    void coverArtSourceChanged();
+
+    void currentArtistChanged();
+
+    void currentAlbumChanged();
+
+    void currentTitleChanged();
 
 private:
     QString m_macAddress = nullptr;

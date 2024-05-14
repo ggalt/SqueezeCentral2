@@ -27,6 +27,7 @@ class SqueezeServer : public QObject
     Q_PROPERTY(Slimp3PlayerModel* PlayerModel READ PlayerModel NOTIFY PlayerModelChanged FINAL)
     Q_PROPERTY(Slimp3Player2* curPlayer READ curPlayer WRITE setCurPlayer NOTIFY curPlayerChanged FINAL)
     Q_PROPERTY(bool cliConnected READ cliConnected WRITE setCliConnected NOTIFY cliConnectedChanged FINAL)
+    Q_PROPERTY(bool uiDone READ uiDone WRITE setUiDone NOTIFY uiDoneChanged FINAL)
 
 
 public:
@@ -50,6 +51,9 @@ public:
     bool cliConnected() const;
     void setCliConnected(bool newCliConnected);
 
+    bool uiDone() const;
+    void setUiDone(bool newUiDone);
+
 public slots:
     void AddPlayers(QJsonValue doc);
     void UpdatePlayer(QString mac, QJsonDocument &doc);
@@ -63,6 +67,10 @@ public slots:
     Slimp3Player2 *curPlayer();
 
     void pauseButton( QString mac, int val );
+    void forwardButton( QString mac );
+    void rewindButton( QString mac );
+
+    void songChange(void);
 
 signals:
     void ServerAddressChanged();
@@ -73,8 +81,11 @@ signals:
     void PlayerModelChanged();
 
     void curPlayerChanged();
+    void songChanged();
 
     void cliConnectedChanged();
+
+    void uiDoneChanged();
 
 private:
     QString m_ServerAddress;
@@ -90,6 +101,7 @@ private:
     bool m_cliConnected;
 
     QTimer tock;
+    bool m_uiDone = false;
 };
 
 #endif // SQUEEZESERVER_H

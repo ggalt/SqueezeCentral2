@@ -68,6 +68,10 @@ QVariant Slimp3PlayerModel::data(const QModelIndex &index, int role) const
         DEBUGF("PLAYER:" << retVal );
         return retVal;
     }
+    else if( role == CurrentIndex ) {
+        DEBUGF("Current Index Requested:" << item->playlistCurIndex());
+        return item->playlistCurIndex();
+    }
     else if( role == SongTitle ) {
         DEBUGF("Songtitle requested:" << item->currentTitle());
         return item->currentTitle();
@@ -272,7 +276,7 @@ QHash<int, QByteArray> Slimp3PlayerModel::roleNames() const
     roles[PauseStatus] = "pauseStatus";
     roles[RepeatStatus] = "repeatStatus";
     roles[ShuffleStatus] = "shuffleStatus";
-
+    roles[CurrentIndex] = "currentIndex";
 
     DEBUGF("ROLES RETURNED" << roles);
 

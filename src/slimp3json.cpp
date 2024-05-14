@@ -94,12 +94,12 @@ void Slimp3JSON::receiveJSONReply(QNetworkReply* reply)
             QJsonValue array(doc["params"]);
             if( array[0] !="") {
                 if( squeezeServer->hasMacAddress( array[0].toString().toLatin1() )) {
-                    DEBUGF("mac address:" << array[0].toString());
+                    DEBUGF("Updating mac address:" << array[0].toString());
                     squeezeServer->UpdatePlayer(array[0].toString(), doc);
                 }
             }
             if( array[1][0].toString() == "players" ) {
-                DEBUGF(doc);
+                DEBUGF("Adding player:" << doc);
                 emit PlayersAdded(doc["result"]);
             }
         }

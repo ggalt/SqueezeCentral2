@@ -14,6 +14,7 @@ public:
         NameRole = Qt::UserRole + 1,
         MACRole,
         PlayerRole,
+        CurrentIndex,
         SongTitle,
         ArtistName,
         AlbumTitle,

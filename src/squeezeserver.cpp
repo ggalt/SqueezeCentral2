@@ -88,6 +88,7 @@ void SqueezeServer::AddPlayers(QJsonValue jValue)
         tempPlayer->setPlayerIndex(c);
         PlayerModel()->addPlayer(tempPlayer);
         connect(&tock, SIGNAL(timeout()), tempPlayer, SLOT(Tick()));
+        // connect(tempPlayer, SIGNAL(playlistCurIndexChanged()), this, SLOT(songChange()));
         m_slimp3JSON->sendJSONCommand(tempPlayer->macAddress(), {"status","0", "100", "tags:a,c,d,J,l,t"});
     }
 }
@@ -103,15 +104,19 @@ void SqueezeServer::UpdatePlayer(QString mac, QJsonDocument &doc)
         }
         player->UpdatePlayerValues(doc);
         DEBUGF("PLAYER INDEX:" << player->playerIndex() << "PLAYER MODEL COUNT" << m_PlayerModel->rowCount());
-        if( player->playerIndex() == m_PlayerModel->rowCount() -1 ){    // last player updated
+        if( !uiDone() && player->playerIndex() == m_PlayerModel->rowCount() -1 ){    // last player updated
             DEBUGF("LAST PLAYER UPDATED:" << player->playerIndex() );
             this->setCurPlayer(player);
             engine->rootContext()->setContextProperty("CurrentPlayer", this->curPlayer());
             engine->rootContext()->setContextProperty("tock", &tock);
+            engine->rootContext()->setContextProperty("squeezeServer", this);
             engine->load(url);
             QObject *rootObj = engine->rootObjects().at(0);
 
             connect(rootObj, SIGNAL(pauseButton(QString,int)), this, SLOT(pauseButton(QString,int)));
+            connect(rootObj, SIGNAL(forwardButton(QString)), this, SLOT(forwardButton(QString)));
+            connect(rootObj, SIGNAL(rewindButton(QString)), this, SLOT(rewindButton(QString)));
+            setUiDone(true);
         }
     }
 
@@ -148,8 +153,9 @@ void SqueezeServer::receivePlayerCLICommand(QString mac, QString cmd)
             }
 
         } else if( cmdList[1] == "newsong" ) {
-            DEBUGF("new song");
-            player->setPlaylistCurIndex( cmdList[3].toInt() );
+            int newsongIndex = cmdList[cmdList.size()-1 ].toInt();
+            DEBUGF("new song at index:" << newsongIndex);
+            player->setPlaylistCurIndex( newsongIndex );
 
         } else if( cmdList[1] == "repeat" ) {
             player->setRepeatPlaylist( cmdList[2].toInt() );
@@ -160,7 +166,14 @@ void SqueezeServer::receivePlayerCLICommand(QString mac, QString cmd)
         } else if( cmdList[1] == "stop" ) {
             DEBUGF("STOP");
             player->setPlayerMode("pause");
-        } else {
+        } else if( cmdList[1] == "loadtracks" ) {  // loading new playlist
+            DEBUGF("LOADING TRACKS");
+            m_slimp3JSON->sendJSONCommand(player->macAddress(), {"status","0", "100", "tags:a,c,d,J,l,t"});
+        } else if( cmdList[1]== "addtracks") { // adding to existing playlist
+            DEBUGF("ADDING TRACKS");
+            m_slimp3JSON->sendJSONCommand(player->macAddress(), {"status","0", "100", "tags:a,c,d,J,l,t"});
+        }
+        else {
             DEBUGF("UNKNOWN PLAYLIST COMMAND" << cmdList);
         }
 
@@ -178,11 +191,13 @@ void SqueezeServer::receivePlayerCLICommand(QString mac, QString cmd)
             player->setMixerVolume( vol.toInt() );
         }
 
-    } else if( cmdList[0] == "loadtracks" || cmdList[0] == "addtracks" ) {  // loading new playlist or adding to it
-        m_slimp3JSON->sendJSONCommand(player->macAddress(), {"status","0", "100", "tags:a,c,d,J,l,t"});
     } else if( cmdList[0] == "pause" ) {
         DEBUGF("PAUSE COMMAND" << cmdList );
         player->setPlayerMode("pause");
+
+    } else if( cmdList[0] == "play" ) {
+        DEBUGF("PAUSE COMMAND" << cmdList );
+        player->setPlayerMode("play");
 
     } else {
         DEBUGF("UNKNOWN COMMAND" << cmdList);
@@ -269,6 +284,24 @@ void SqueezeServer::pauseButton(QString mac, int val)
         m_slimp3CLI->sendStandardCommand(C_PAUSE, mac.toLatin1());
 }
 
+void SqueezeServer::forwardButton(QString mac)
+{
+    DEBUGF("FORWARD BUTTON PUSHED WITH:" << mac);
+    m_slimp3CLI->sendStandardCommand(C_NEXTTRACK, mac.toLatin1());
+}
+
+void SqueezeServer::rewindButton(QString mac)
+{
+    DEBUGF("REWIND BUTTON PUSHED WITH:" << mac);
+    m_slimp3CLI->sendStandardCommand(C_PREVIOUSTRACK, mac.toLatin1());
+}
+
+void SqueezeServer::songChange()
+{
+    // emit this->PlayerModel()->dataChanged(QModelIndex(), QModelIndex());
+    emit songChanged();
+}
+
 void SqueezeServer::setCurPlayer(Slimp3Player2 *newCurPlayer)
 {
     if (m_curPlayer == newCurPlayer)
@@ -288,4 +321,17 @@ void SqueezeServer::setCliConnected(bool newCliConnected)
         return;
     m_cliConnected = newCliConnected;
     emit cliConnectedChanged();
+}
+
+bool SqueezeServer::uiDone() const
+{
+    return m_uiDone;
+}
+
+void SqueezeServer::setUiDone(bool newUiDone)
+{
+    if (m_uiDone == newUiDone)
+        return;
+    m_uiDone = newUiDone;
+    emit uiDoneChanged();
 }

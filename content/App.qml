@@ -29,12 +29,16 @@ Window {
         console.log("TEST FUNCTION TEXT:", myText)
     }
 
+    function updatePlayers() {
+
+    }
+
     signal pauseButton( mac: string, status: int )
     signal forwardButton( mac: string )
     signal rewindButton( mac: string )
 
     signal tickTock()
-
+    signal refreshCard()
 
     ToolBar {
         id: toolBar

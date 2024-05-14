@@ -171,6 +171,11 @@ void Slimp3Player2::setPlaylistCurIndex(int newPlaylistCurIndex)
         DEBUGF("setting current song to:" << currentSong()->Title());
         setSongProgress(0.0);
         setSongDuration(currentSong()->Duration());
+        setCoverArtSource(currentSong()->artworkID());
+        setCurrentArtist(currentSong()->Artist());
+        setCurrentAlbum(currentSong()->Album());
+        setCurrentTitle(currentSong()->Title());
+
     } else {
         DEBUGF("SONG LIST MODEL IS NULL");
         setSongListModel(new SongListModel(this));
@@ -372,4 +377,36 @@ void Slimp3Player2::setSongDuration(double newSongDuration)
     m_songDuration = newSongDuration;
     DEBUGF("SONG DURATION OF PLAYER:" << m_songDuration);
     emit songDurationChanged();
+}
+
+void Slimp3Player2::setCoverArtSource(const QString &newCoverArtSource)
+{
+    if (m_coverArtSource == newCoverArtSource)
+        return;
+    m_coverArtSource = newCoverArtSource;
+    emit coverArtSourceChanged();
+}
+
+void Slimp3Player2::setCurrentArtist(const QString &newCurrentArtist)
+{
+    if (m_currentArtist == newCurrentArtist)
+        return;
+    m_currentArtist = newCurrentArtist;
+    emit currentArtistChanged();
+}
+
+void Slimp3Player2::setCurrentAlbum(const QString &newCurrentAlbum)
+{
+    if (m_currentAlbum == newCurrentAlbum)
+        return;
+    m_currentAlbum = newCurrentAlbum;
+    emit currentAlbumChanged();
+}
+
+void Slimp3Player2::setCurrentTitle(const QString &newCurrentTitle)
+{
+    if (m_currentTitle == newCurrentTitle)
+        return;
+    m_currentTitle = newCurrentTitle;
+    emit currentTitleChanged();
 }

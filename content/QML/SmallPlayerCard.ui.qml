@@ -12,12 +12,13 @@ import QtQuick.Controls.Basic
 import QtQuick.Controls.Fusion
 import QtQuick.Controls.Material
 import QtQuick.Controls.Universal
-import SqueezeCentral2
+import SqueezeCentral2 1.0
+import com.georgegalt.SqueezeServer
 
 Rectangle {
     id: smallPlayerCard
     property alias coverImage: albumCoverImage.source
-    // property alias songInfoText: songInfo.text
+    property alias songInfoText: songInfo.scrollText
     property alias playerNameText: playerNameLbl.text
     property alias songProgress: songProgressBar.value
     property int buttonHeightMargins: 5
@@ -25,31 +26,39 @@ Rectangle {
 
     color: Material.background
 
-    // Connections {
-    //     target: smallPlayerCard
-    //     function updateElapsedTime() {
-    //         console.log("Smallplayercard update elapsed time")
-    //     }
-    // }
-
     Connections {
         target: mainWindow
         function onTickTock() {
-            songProgressBar.value = currentProgress / duration
-            // console.log("Current Progress:" + currentProgress +" / " +  duration +" / " +  playerName)
+            songProgress = currentProgress / duration
+            // albumCoverImage.source = (albumArtID == "") ? "http://192.168.1.50:9000/html/images/artists.png" : "http://192.168.1.50:9000/music/" + albumArtID + "/cover.jpg"
+            // songInfo.scrollText = songTitle
         }
     }
 
+    Connections {
+        target: playerObj
+        onPlaylistCurIndexChanged: {
+            console.log("PLAYER INDEX CHANGED TO", currentIndex, playerObj)
+            coverImage = (albumArtID == "") ? "http://192.168.1.50:9000/html/images/artists.png" : "http://192.168.1.50:9000/music/" + albumArtID + "/cover.jpg"
+            songInfoText = songTitle
+        }
+    }
 
-    // signal launchLargePlayer( string macAddress )
+    // Connections {
+    //     target: squeezeServer
+    //     onSongChanged: {
+    //         albumCoverImage.source = (albumArtID == "") ? "http://192.168.1.50:9000/html/images/artists.png" : "http://192.168.1.50:9000/music/" + albumArtID + "/cover.jpg"
+    //         songInfo.scrollText = songTitle
+    //         console.log("SONG CHANGED", songTitle, albumArtID)
+    //     }
+    // }
+
+
     Pane {
         anchors.fill: parent
         anchors.margins: 15
         Material.elevation: 6
 
-        // Component.onCompleted: {
-        //     smallPlayerCard.launchLargePlayer.connect(stackView)
-        // }
         Label {
             id: playerNameLbl
             anchors.top: parent.top
@@ -92,17 +101,11 @@ Rectangle {
             anchors.bottom: parent.bottom
             anchors.margins: buttonSideMargins
             Material.elevation: 6
-            // Label {
-            //     id: songProgressBar
-            //     anchors.verticalCenter: parent.verticalCenter
-            //     anchors.horizontalCenter: parent.horizontalCenter
-            //     width: parent.width * 4 / 5
-            //     text: duration
-            // }
 
             ProgressBar {
                 id: songProgressBar
                 // value: currentProgress
+                smooth: true
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width * 4 / 5
@@ -121,48 +124,6 @@ Rectangle {
                 scrollText: songTitle
             }
 
-            // Label {
-            //     id: songInfo
-            //     text: songTitle
-            //     anchors.top: parent.top
-            //     anchors.bottom: songProgressBar.top
-            //     horizontalAlignment: Text.AlignHCenter
-            //     verticalAlignment: Text.AlignVCenter
-            //     font.pointSize: 24
-            //     anchors.horizontalCenter: parent.horizontalCenter
-            // }
-
-            // Button {
-            //     id: playButton
-            //     anchors.top: songProgressBar.bottom
-            //     anchors.bottom: parent.bottom
-            //     anchors.topMargin: buttonHeightMargins
-            //     anchors.bottomMargin: buttonHeightMargins
-            //     anchors.horizontalCenter: parent.horizontalCenter
-            //     width: height
-            //     onPressed: play.opacity = 0.5
-            //     Connections {
-            //         target: play
-            //         function onReleased() {
-            //             play.opacity = 1.0
-            //             if( pauseStatus == 0 )
-            //                 mainWindow.pauseFuntion( macAddress, 1 )
-            //             else
-            //                 mainWindow.pauseFunction( macAddress, 0 )
-            //         }
-
-            //     }
-
-            //     // onPressAndHold:
-            //     Image {
-            //         id: play
-            //         source: pauseStatus == 0 ? "qrc:/content/Icons/play.png" : "qrc:/content/Icons/pause.png"
-            //         // source: "Icons/play.png"
-            //         fillMode: Image.PreserveAspectFit
-            //         anchors.fill: parent
-            //         opacity: 1.0
-            //     }
-            // }
             Rectangle {
                 id: playButton
                 anchors.top: songProgressBar.bottom
@@ -175,7 +136,7 @@ Rectangle {
 
                 Image {
                     id: playImage
-                    source: pauseStatus == 0 ? "qrc:/content/Icons/pause.png" : "qrc:/content/Icons/play.png"
+                    source: pauseStatus == "pause" ? "qrc:/content/Icons/play.png" : "qrc:/content/Icons/pause.png"
                     // source: "Icons/play.png"
                     fillMode: Image.PreserveAspectFit
                     anchors.fill: parent
@@ -190,15 +151,14 @@ Rectangle {
                         function onReleased(mouse) {
                             console.log("Pause Status:", pauseStatus)
                             playImage.opacity = 1.0
-                            if( pauseStatus == 0 ) {
+                            if( pauseStatus == "pause" ) {
                                 mainWindow.pauseButton( macAddress, 1 )
-                                playImage.source = "qrc:/content/Icons/play.png"
+                                playImage.source = "qrc:/content/Icons/pause.png"
                             }
                             else {
                                 mainWindow.pauseButton( macAddress, 0 )
-                                playImage.source = "qrc:/content/Icons/pause.png"
+                                playImage.source = "qrc:/content/Icons/play.png"
                             }
-                            console.log(playerName, songTitle, artistName, albumName, albumArtID, duration, timeRemaining, currentProgress, pauseStatus, repeatStatus, shuffleStatus)
                         }
                     }
                 }
@@ -229,6 +189,7 @@ Rectangle {
                     Connections {
                         target: backButtonMouse
                         function onReleased(mouse) {
+                            mainWindow.rewindButton(macAddress)
                             new_reverse.opacity = 1.0
                         }
                     }
@@ -260,6 +221,7 @@ Rectangle {
                     Connections {
                         target: forwardButtonMouse
                         function onReleased(mouse) {
+                            mainWindow.forwardButton(macAddress)
                             new_forward.opacity = 1.0
                         }
                     }
